@@ -44,54 +44,13 @@ jobs:
           ls
           sha256sum geoip.db > geoip.db.sha256sum
           sha256sum geoip-cn.db > geoip-cn.db.sha256sum
-      - name: Create a release
-        if: ${{ env.NeedToSync }}
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
+          name: ${{ env.RELEASE_NAME }}
           tag_name: ${{ env.TAG_NAME }}
-          release_name: ${{ env.RELEASE_NAME }}
-          draft: false
           prerelease: false
-      - name: Release geoip.db
-        if: ${{ env.NeedToSync }}
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./geoip.db
-          asset_name: geoip.db
-          asset_content_type: application/octet-stream
-      - name: Release geoip.db sha256sum
-        if: ${{ env.NeedToSync }}
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./geoip.db.sha256sum
-          asset_name: geoip.db.sha256sum
-          asset_content_type: text/plain
-      - name: Release geoip-cn.db
-        if: ${{ env.NeedToSync }}
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./geoip-cn.db
-          asset_name: geoip-cn.db
-          asset_content_type: application/octet-stream
-      - name: Release geoip.db sha256sum
-        if: ${{ env.NeedToSync }}
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./geoip-cn.db.sha256sum
-          asset_name: geoip-cn.db.sha256sum
-          asset_content_type: text/plain
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+           geoip*
